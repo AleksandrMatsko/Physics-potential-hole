@@ -15,8 +15,8 @@ double symmetricFunc(double x) {
 
 double asymmetricFunc(double x) {
     double arg_tan = sqrt((x + 1) / 2) * width_hole;
-    double right_val = 1 / sqrt(1 / fabs(x) - 1);
-    return 1 / tan(arg_tan) - right_val;
+    double right_val = sqrt(1 / fabs(x) - 1);
+    return tan(arg_tan) + right_val;
 }
 
 double sgn(double x) {
@@ -33,7 +33,6 @@ double binorySearch(double left, double right, double (*func)(double)) {
     if (right < left) {
         return -2;
     }
-    std::cout << left << " " << right << std::endl;
     while (true) {
         double mid = (right + left) / 2;
         double mid_func = func(mid);
@@ -65,30 +64,23 @@ int main() {
     start += STEP;
     std::vector<std::pair<double, bool>> solutions;
 
-    int iteration = 0;
     while (start < 0) {
         double cur_func_sym = symmetricFunc(start);
         if (sgn(cur_func_sym) * sgn(prev_func_sym) < 0 && fabs(cur_func_sym) < 10 && fabs(prev_func_sym) < 10) {
-            std::cout << start - STEP << " " << prev_func_sym << std::endl;
-            std::cout << start << " " << cur_func_sym << std::endl;
             double res = binorySearch(start - STEP, start, &symmetricFunc);
             if (res >= -1 && res <= 0) {
                 solutions.push_back(std::pair<double, bool>(res, true));
             }
-            std::cout << std::endl;
         }
         else if (sgn(cur_func_sym) == 0) {
             solutions.push_back(std::pair<double, bool>(start, true));
         }
         double cur_func_asym = asymmetricFunc(start);
         if (sgn(cur_func_asym) * sgn(prev_func_asym) < 0 && fabs(cur_func_asym) < 10 && fabs(prev_func_asym) < 10) {
-            std::cout << start - STEP << " " << prev_func_asym << std::endl;
-            std::cout << start << " " << cur_func_asym << std::endl;
             double res = binorySearch(start - STEP, start, &asymmetricFunc);
             if (res >= -1 && res <= 0) {
                 solutions.push_back(std::pair<double, bool>(res, false));
             }
-            std::cout << std::endl;
         }
         else if (sgn(cur_func_asym) == 0) {
             solutions.push_back(std::pair<double, bool>(start, true));
@@ -96,10 +88,6 @@ int main() {
         prev_func_asym = cur_func_asym;
         prev_func_sym = cur_func_sym;
         start += STEP;
-        if (iteration % 100 == 0) {
-            std::cout << "iteration: " << iteration << std::endl;
-        }
-        iteration += 1;
     }
 
     std::ofstream out;
