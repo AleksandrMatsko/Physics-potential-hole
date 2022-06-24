@@ -57,6 +57,10 @@ int main() {
 
     std::cout << "Enter width of hole" << std::endl;
     std::cin >> width_hole;
+    if (width_hole < 0) {
+        std::cerr << "Error: width of hole can't be less than 0" << std::endl;
+        return 1;
+    }
 
     double start = -1 + STEP;
     double prev_func_sym = symmetricFunc(start);
